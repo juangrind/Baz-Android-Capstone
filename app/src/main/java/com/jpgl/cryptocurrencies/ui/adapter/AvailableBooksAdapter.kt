@@ -6,17 +6,15 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.jpgl.cryptocurrencies.R
-import com.jpgl.cryptocurrencies.data.model.BookModel
 import com.jpgl.cryptocurrencies.databinding.CryptoItemBinding
 import com.jpgl.cryptocurrencies.domain.model.BooksModelDomain
 import com.jpgl.cryptocurrencies.utils.Utils.toBookName
 
-
 class AvailableBooksAdapter(
-    private val listener: OnCryptoSelectedItem
-): ListAdapter<BooksModelDomain, AvailableBooksAdapter.ViewHolder>(difCallback)  {
+    private val listener: OnCryptoSelectedItem,
+) : ListAdapter<BooksModelDomain, AvailableBooksAdapter.ViewHolder>(difCallback) {
 
-    companion object{
+    companion object {
         var difCallback = object : DiffUtil.ItemCallback<BooksModelDomain>() {
             override fun areItemsTheSame(oldItem: BooksModelDomain, newItem: BooksModelDomain): Boolean =
                 oldItem.bookName == newItem.bookName
@@ -36,15 +34,16 @@ class AvailableBooksAdapter(
     }
 
     inner class ViewHolder(val binding: CryptoItemBinding) : RecyclerView.ViewHolder(binding.root) {
-        fun enlazarItem( bookModel: BooksModelDomain ){
+        fun enlazarItem(bookModel: BooksModelDomain) {
             binding.txtBookName.text = bookModel.bookName.toBookName()
-            binding.txtMaximumPriceValue.text = bookModel.maximumPrice
-            binding.txtMinimumPriceValue.text = bookModel.minimumPrice
+            binding.txtMaximumPriceValue.text = "$ ${bookModel.maximumPrice}.00"
+            binding.txtMinimumPriceValue.text = "$ ${bookModel.minimumPrice}.00"
+            binding.txtMaximumAmount.text = "Cantidad: ${bookModel.maximumAmount}"
 
             binding.cardBook.setOnClickListener {
                 listener.onItemListener(bookModel)
             }
-            when(bookModel.bookName){
+            when (bookModel.bookName) {
                 "c" -> binding.imageBitcoin.setImageResource(R.drawable.bitcoin)
                 "eth_mxn" -> binding.imageBitcoin.setImageResource(R.drawable.ethereum)
                 "xrp_mxn" -> binding.imageBitcoin.setImageResource(R.drawable.xrp)
@@ -61,5 +60,4 @@ class AvailableBooksAdapter(
             }
         }
     }
-
 }

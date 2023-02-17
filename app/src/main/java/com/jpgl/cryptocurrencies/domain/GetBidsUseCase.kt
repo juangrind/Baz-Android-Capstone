@@ -6,13 +6,14 @@ import com.jpgl.cryptocurrencies.data.model.BidsModel
 import com.jpgl.cryptocurrencies.data.model.BookModel
 import com.jpgl.cryptocurrencies.domain.model.BidsModelDomain
 import com.jpgl.cryptocurrencies.domain.model.BooksModelDomain
+import com.jpgl.cryptocurrencies.utils.BaseUtils
 import javax.inject.Inject
 
 class GetBidsUseCase @Inject constructor(
     private val cryptoRepository : CryptoRepository
 ) {
     suspend operator fun invoke(book: String): List<BidsModelDomain> {
-        val bids =  cryptoRepository.getAllBidsFromApi(book)
+        val bids = if(BaseUtils.isNetworkEnabled()) cryptoRepository.getAllBidsFromApi(book) else cryptoRepository.getAllBidsFromDatabase()
         return if (bids.isNotEmpty()) {
             cryptoRepository.cleanBids()
             cryptoRepository.insertBids( bids.map { it.toDatabase() })

@@ -1,43 +1,44 @@
 package com.jpgl.cryptocurrencies.ui.view
 
-
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import com.jpgl.cryptocurrencies.R
-import com.jpgl.cryptocurrencies.ui.viewModel.CryptoViewModel
-import com.jpgl.cryptocurrencies.databinding.FragmentCryptoDetailBinding
-import com.jpgl.cryptocurrencies.databinding.FragmentCryptoListBinding
-import com.jpgl.cryptocurrencies.ui.adapter.AsksAdapter
-import com.jpgl.cryptocurrencies.ui.adapter.AvailableBooksAdapter
-import com.jpgl.cryptocurrencies.ui.adapter.BidsAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.jpgl.cryptocurrencies.R
+import com.jpgl.cryptocurrencies.databinding.FragmentCryptoDetailBinding
+import com.jpgl.cryptocurrencies.ui.adapter.AsksAdapter
+import com.jpgl.cryptocurrencies.ui.adapter.BidsAdapter
+import com.jpgl.cryptocurrencies.ui.viewModel.CryptoViewModel
 import com.jpgl.cryptocurrencies.utils.RequestState
 import com.jpgl.cryptocurrencies.utils.Utils.toBookName
 import dagger.hilt.android.AndroidEntryPoint
+import androidx.navigation.fragment.findNavController
+import android.graphics.Color
 
 @AndroidEntryPoint
 class CryptoDetailFragment : Fragment() {
     private var _binding: FragmentCryptoDetailBinding? = null
     private val binding get() = _binding!!
+
     private var bookName: String = ""
     private val cryptoViewModel: CryptoViewModel by viewModels()
     private var adapterBids = BidsAdapter()
     private var adapterAsks = AsksAdapter()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         bookName = arguments?.getString("nombreBook").toString()
-        Log.d("bookname", "$bookName")
         _binding = FragmentCryptoDetailBinding.inflate(inflater, container, false)
         val view = binding.root
         return view
@@ -47,46 +48,83 @@ class CryptoDetailFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
 
+
+        binding.apply {
+            toolbar.setNavigationIcon(R.drawable.ic_baseline_arrow_back_24)
+            toolbar.setNavigationOnClickListener {
+                findNavController().navigate(R.id.action_cryptoDetailFragment_to_cryptoListFragment)
+            }
+
+            recyclerBids.adapter = adapterBids
+            recyclerAsks.adapter = adapterAsks
+            recyclerBids.layoutManager = LinearLayoutManager(requireContext())
+            recyclerAsks.layoutManager = LinearLayoutManager(requireContext())
+            buttonAsks.setBackgroundColor(resources.getColor(R.color.buttons))
+
+            buttonAsks.setOnClickListener {
+                it.setBackgroundColor(resources.getColor(R.color.buttons))
+                buttonABids.setBackgroundColor(Color.WHITE)
+                recyclerBids.visibility = View.GONE
+                recyclerAsks.visibility = View.VISIBLE
+            }
+
+            buttonABids.setOnClickListener {
+                it.setBackgroundColor(resources.getColor(R.color.buttons))
+                buttonAsks.setBackgroundColor(Color.WHITE)
+                recyclerAsks.visibility = View.GONE
+                recyclerBids.visibility = View.VISIBLE
+            }
+
+        }
+
         cryptoViewModel.onCreateBids(bookName)
         cryptoViewModel.bidsState.observe(viewLifecycleOwner) {
-            when(it) {
-                is RequestState.Error -> Log.d("message", "BidsError: ${it.message}")
-                is RequestState.Loading -> Log.d("message", "BidsLoading: ${it.toString()}")
+            when (it) {
+                is RequestState.Error -> Log.d("mensajito", "BidsError: ${it.message}")
+                is RequestState.Loading -> Log.d("mensajito", "BidsLoading: $it")
                 is RequestState.Success -> {
                     adapterBids.submitList(it.data)
-                    binding.apply {
-                        recyclerBids.adapter = adapterBids
-                        recyclerBids.layoutManager = LinearLayoutManager(requireContext())
-                    }
                 }
             }
         }
 
         cryptoViewModel.onCreateAsks(bookName)
         cryptoViewModel.asksState.observe(viewLifecycleOwner) {
-            when(it) {
-                is RequestState.Error -> Log.d("message", "BidsError: ${it.message}")
-                is RequestState.Loading -> Log.d("message", "BidsLoading: ${it.toString()}")
+            when (it) {
+                is RequestState.Error -> Log.d("mensajito", "BidsError: ${it.message}")
+                is RequestState.Loading -> Log.d("mensajito", "BidsLoading: $it")
                 is RequestState.Success -> {
                     adapterAsks.submitList(it.data)
-                    binding.apply {
-                        recyclerAsks.adapter = adapterAsks
-                        recyclerAsks.layoutManager = LinearLayoutManager(requireContext())
-                    }
                 }
             }
         }
 
         cryptoViewModel.onCreateTicker(bookName)
         cryptoViewModel.tickerState.observe(viewLifecycleOwner) {
-            when(it) {
-                is RequestState.Error -> Log.d("message", "TickerError: ${it.message}")
-                is RequestState.Loading -> Log.d("message", "TickerLoading: ${it.toString()}")
+            when (it) {
+                is RequestState.Error -> Log.d("mensajito", "TickerError: ${it.message}")
+                is RequestState.Loading -> Log.d("mensajito", "TickerLoading: $it")
                 is RequestState.Success -> {
-                    binding.txtBookNameDetail.text = bookName.toBookName()
-                    binding.txtLastPrice.text = activity?.resources?.getString(R.string.last_price, it.data?.last)
-                    binding.txtHighPrice.text = activity?.resources?.getString(R.string.highPrice, it.data?.high)
-                    binding.txtlowPrice.text = activity?.resources?.getString(R.string.lowPrice, it.data?.low)
+                    binding.toolbar.setTitle(bookName.toBookName())
+                    binding.txtLastPrice.text = "$ ${it.data?.last}.00 usd"
+                    binding.txtHighPrice.text = "+ $ ${it.data?.high}.00 "
+                    binding.txtlowPrice.text = "- $ ${it.data?.low}.00 "
+
+                    when (bookName) {
+                        "btc_mxn" -> binding.imageBitcoinDetail.setImageResource(R.drawable.bitcoin)
+                        "eth_mxn" -> binding.imageBitcoinDetail.setImageResource(R.drawable.ethereum)
+                        "xrp_mxn" -> binding.imageBitcoinDetail.setImageResource(R.drawable.xrp)
+                        "ltc_mxn" -> binding.imageBitcoinDetail.setImageResource(R.drawable.litecoin)
+                        "bch_mxn" -> binding.imageBitcoinDetail.setImageResource(R.drawable.bitcoin_cash)
+                        "tusd_mxn" -> binding.imageBitcoinDetail.setImageResource(R.drawable.tether)
+                        "mana_mxn" -> binding.imageBitcoinDetail.setImageResource(R.drawable.monero)
+                        "bat_mxn" -> binding.imageBitcoinDetail.setImageResource(R.drawable.avalanche_1)
+                        "dai_mxn" -> binding.imageBitcoinDetail.setImageResource(R.drawable.dai)
+                        "usd_mxn" -> binding.imageBitcoinDetail.setImageResource(R.drawable.uniswap)
+                        else -> {
+                            binding.imageBitcoinDetail.setImageResource(R.drawable.iota)
+                        }
+                    }
                 }
             }
         }

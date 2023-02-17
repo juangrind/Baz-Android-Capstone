@@ -1,5 +1,6 @@
 package com.jpgl.cryptocurrencies.ui.viewModel
 
+import android.annotation.SuppressLint
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -54,6 +55,7 @@ class CryptoViewModel @Inject constructor(
         }
     }
 
+    @SuppressLint("SuspiciousIndentation")
     fun onCreateBids(book: String){
         _bidsState.postValue(RequestState.Loading())
         viewModelScope.launch {
