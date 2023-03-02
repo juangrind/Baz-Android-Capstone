@@ -11,14 +11,18 @@ class GetTickerUseCase @Inject constructor(
 ) {
 
     suspend operator fun invoke(book: String): TickerModelDomain? {
-        val ticker = if (BaseUtils.isNetworkEnabled()) cryptoRepository.getAllTickerFromApi(book) else cryptoRepository.getAllTickerFromDatabase()
-        return if (ticker != null) {
-            cryptoRepository.cleanTicker()
-            cryptoRepository.insertTicker(ticker.toDatabase())
-            ticker
-        } else {
-            // si falla el servidor se accede a una versión guardada en la base de datos
-            cryptoRepository.getAllTickerFromDatabase()
+        return try {
+            val ticker = if (BaseUtils.isNetworkEnabled()) cryptoRepository.getAllTickerFromApi(book) else cryptoRepository.getAllTickerFromDatabase()
+            if (ticker != null) {
+                cryptoRepository.cleanTicker()
+                cryptoRepository.insertTicker(ticker.toDatabase())
+                ticker
+            } else {
+                cryptoRepository.getAllTickerFromDatabase()
+            }
+        } catch (exception: Exception) {
+            // Manejar la excepción aquí
+            null
         }
     }
 }

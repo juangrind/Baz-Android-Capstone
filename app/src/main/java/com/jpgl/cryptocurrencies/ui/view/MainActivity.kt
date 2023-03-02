@@ -25,25 +25,25 @@ class MainActivity : AppCompatActivity() {
         cryptoViewModel.onCreateAvailableBook()
         cryptoViewModel.bookState.observe(this) {
             when (it) {
-                is RequestState.Error -> Log.d("mensajito", "AvailableBookError: ${it.message}")
-                is RequestState.Loading -> Log.d("mensajito", "AvailableBookLoading: $it")
-                is RequestState.Success -> Log.d("mensajito", "AvailableBookSuccess: ${it.data}")
+                is RequestState.Error -> Log.d("message", "AvailableBookError: ${it.message}")
+                is RequestState.Loading -> Log.d("message", "AvailableBookLoading: $it")
+                is RequestState.Success -> Log.d("message", "AvailableBookSuccess: ${it.data}")
             }
         }
 
         cryptoViewModel.bidsState.observe(this) {
             when (it) {
-                is RequestState.Error -> Log.d("mensajito", "BidsError: ${it.message}")
-                is RequestState.Loading -> Log.d("mensajito", "BidsLoading: $it")
-                is RequestState.Success -> Log.d("mensajito", "BidsSuccess: ${it.data}")
+                is RequestState.Error -> Log.d("message", "BidsError: ${it.message}")
+                is RequestState.Loading -> Log.d("message", "BidsLoading: $it")
+                is RequestState.Success -> Log.d("message", "BidsSuccess: ${it.data}")
             }
         }
 
         cryptoViewModel.tickerState.observe(this) {
             when (it) {
-                is RequestState.Error -> Log.d("mensajito", "TickerError: ${it.message}")
-                is RequestState.Loading -> Log.d("mensajito", "TickerLoading: $it")
-                is RequestState.Success -> Log.d("mensajito", "TickerSuccess: ${it.data}")
+                is RequestState.Error -> Log.d("message", "TickerError: ${it.message}")
+                is RequestState.Loading -> Log.d("message", "TickerLoading: $it")
+                is RequestState.Success -> Log.d("message", "TickerSuccess: ${it.data}")
             }
         }
     }

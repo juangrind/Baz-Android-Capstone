@@ -1,9 +1,6 @@
 package com.jpgl.cryptocurrencies.domain.model
 
-import androidx.room.ColumnInfo
-import com.jpgl.cryptocurrencies.data.database.entities.BookEntity
 import com.jpgl.cryptocurrencies.data.database.entities.TickerEntity
-import com.jpgl.cryptocurrencies.data.model.BookModel
 import com.jpgl.cryptocurrencies.data.model.TickerModel
 
 data class TickerModelDomain(

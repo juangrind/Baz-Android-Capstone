@@ -10,14 +10,19 @@ class GetAsksUseCase @Inject constructor(
     private val cryptoRepository: CryptoRepository,
 ) {
     suspend operator fun invoke(book: String): List<AsksModelDomain> {
-        val asks = if (BaseUtils.isNetworkEnabled()) cryptoRepository.getAllAsksFromApi(book) else cryptoRepository.getAllAsksFromDatabase()
+        return try {
+            val asks = if (BaseUtils.isNetworkEnabled()) cryptoRepository.getAllAsksFromApi(book) else cryptoRepository.getAllAsksFromDatabase()
 
-        return if (asks.isNotEmpty()) {
-            cryptoRepository.cleanAsks()
-            cryptoRepository.insertAsks(asks.map { it.toDatabase() })
-            asks
-        } else {
-            cryptoRepository.getAllAsksFromDatabase()
+            if (asks.isNotEmpty()) {
+                cryptoRepository.cleanAsks()
+                cryptoRepository.insertAsks(asks.map { it.toDatabase() })
+                asks
+            } else {
+                cryptoRepository.getAllAsksFromDatabase()
+            }
+        } catch (exception: Exception) {
+            // Manejar la excepción aquí
+            emptyList()
         }
     }
 }

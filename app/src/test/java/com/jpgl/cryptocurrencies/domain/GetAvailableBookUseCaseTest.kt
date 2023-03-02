@@ -24,7 +24,7 @@ class GetAvailableBookUseCaseTest {
     }
 
     @Test
-    fun `Si hay conexion a internet y getAllAvailableBooksFromApi regresa una lista con datos`() = runBlocking {
+    fun `getAllAvailableBooksFromApi_whenNetworkConection_returnDataList`() = runBlocking {
         // given
         val myList = listOf(BooksModelDomain("btc_mxn", "40000", "20000000", "0.00000030000", "3000", "10.00", "200000000"))
         every { BaseUtils.isNetworkEnabled() } returns true
@@ -40,7 +40,7 @@ class GetAvailableBookUseCaseTest {
     }
 
     @Test
-    fun `Si hay conexion a internet y getAllAvailableBooksFromApi regresa una emptylist`() = runBlocking {
+    fun `getAllAvailableBooksFromApi_whenNetworkConection_returnEmptyList`() = runBlocking {
         // given
         var myList = emptyList<BooksModelDomain>()
         every { BaseUtils.isNetworkEnabled() } returns true
@@ -55,7 +55,7 @@ class GetAvailableBookUseCaseTest {
     }
 
     @Test
-    fun `No hay conexion a internet y getAllAvailableBooksFromApi regresa una lista`() = runBlocking {
+    fun `getAllAvailableBooksFromApi_whenNoInternetConection_retusnAList`() = runBlocking {
         // given
         val myList = listOf(BooksModelDomain("btc_mxn", "40000", "20000000", "0.00000030000", "3000", "10.00", "200000000"))
         every { BaseUtils.isNetworkEnabled() } returns false
