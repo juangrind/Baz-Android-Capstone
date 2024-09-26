@@ -10,7 +10,7 @@ data class BooksModelDomain(
     val minimumAmount: String,
     val maximumAmount: String,
     val minimumValue: String,
-    val maximumValue: String
+    val maximumValue: String,
 )
 
 fun BookModel.toDomain() = BooksModelDomain(bookName, minimumPrice, maximumPrice, minimumAmount, maximumAmount, minimumValue, maximumValue)

@@ -1,5 +1,6 @@
 package com.jpgl.cryptocurrencies.ui.view
 
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -7,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.jpgl.cryptocurrencies.R
 import com.jpgl.cryptocurrencies.databinding.FragmentCryptoDetailBinding
@@ -16,8 +18,6 @@ import com.jpgl.cryptocurrencies.ui.viewModel.CryptoViewModel
 import com.jpgl.cryptocurrencies.utils.RequestState
 import com.jpgl.cryptocurrencies.utils.Utils.toBookName
 import dagger.hilt.android.AndroidEntryPoint
-import androidx.navigation.fragment.findNavController
-import android.graphics.Color
 
 @AndroidEntryPoint
 class CryptoDetailFragment : Fragment() {
@@ -36,7 +36,7 @@ class CryptoDetailFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View? {
         bookName = arguments?.getString("nombreBook").toString()
         _binding = FragmentCryptoDetailBinding.inflate(inflater, container, false)
@@ -46,8 +46,6 @@ class CryptoDetailFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-
 
         binding.apply {
             toolbar.setNavigationIcon(R.drawable.ic_baseline_arrow_back_24)
@@ -74,7 +72,6 @@ class CryptoDetailFragment : Fragment() {
                 recyclerAsks.visibility = View.GONE
                 recyclerBids.visibility = View.VISIBLE
             }
-
         }
 
         cryptoViewModel.onCreateBids(bookName)

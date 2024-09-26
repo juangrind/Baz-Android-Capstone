@@ -6,7 +6,7 @@ import com.jpgl.cryptocurrencies.data.model.BidsModel
 data class BidsModelDomain(
     var bookBids: String,
     val priceBids: String,
-    val amountBids: String
+    val amountBids: String,
 )
 
 fun BidsModel.toDomain() = BidsModelDomain(bookBids, priceBids, amountBids)
